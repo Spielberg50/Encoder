@@ -1,0 +1,312 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>587</width>
+    <height>451</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>MainWindow</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <widget class="QLabel" name="label_message">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>80</y>
+      <width>81</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>12</pointsize>
+     </font>
+    </property>
+    <property name="locale">
+     <locale language="English" country="UnitedStates"/>
+    </property>
+    <property name="text">
+     <string>Message</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_key">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>190</y>
+      <width>81</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>12</pointsize>
+     </font>
+    </property>
+    <property name="locale">
+     <locale language="English" country="UnitedStates"/>
+    </property>
+    <property name="text">
+     <string>Clé</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_result">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>290</y>
+      <width>81</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>12</pointsize>
+     </font>
+    </property>
+    <property name="locale">
+     <locale language="English" country="UnitedStates"/>
+    </property>
+    <property name="text">
+     <string>Résultat</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="lineEdit_message">
+    <property name="geometry">
+     <rect>
+      <x>130</x>
+      <y>29</y>
+      <width>421</width>
+      <height>141</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="lineEdit_key">
+    <property name="geometry">
+     <rect>
+      <x>130</x>
+      <y>190</y>
+      <width>421</width>
+      <height>20</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="lineEdit_result">
+    <property name="geometry">
+     <rect>
+      <x>130</x>
+      <y>229</y>
+      <width>421</width>
+      <height>131</height>
+     </rect>
+    </property>
+    <property name="readOnly">
+     <bool>true</bool>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pushButton_Submit">
+    <property name="geometry">
+     <rect>
+      <x>260</x>
+      <y>370</y>
+      <width>75</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Submit</string>
+    </property>
+   </widget>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>587</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menuCryptage">
+    <property name="title">
+     <string>Cryptage</string>
+    </property>
+    <widget class="QMenu" name="menuBasiques">
+     <property name="title">
+      <string>Basiques</string>
+     </property>
+     <addaction name="actionCesar"/>
+     <addaction name="actionVegenere"/>
+     <addaction name="actionSubstitution"/>
+     <addaction name="actionTransposition"/>
+    </widget>
+    <widget class="QMenu" name="menuSym_triques">
+     <property name="title">
+      <string>Symétriques</string>
+     </property>
+     <addaction name="actionDES"/>
+    </widget>
+    <widget class="QMenu" name="menuAsym_triques">
+     <property name="title">
+      <string>Asymétriques</string>
+     </property>
+     <addaction name="actionRSA"/>
+    </widget>
+    <addaction name="menuBasiques"/>
+    <addaction name="separator"/>
+    <addaction name="menuSym_triques"/>
+    <addaction name="separator"/>
+    <addaction name="menuAsym_triques"/>
+   </widget>
+   <widget class="QMenu" name="menuDecryptage">
+    <property name="title">
+     <string>Décryptage</string>
+    </property>
+    <widget class="QMenu" name="menuBasiques_2">
+     <property name="title">
+      <string>Basiques</string>
+     </property>
+     <addaction name="actionCesar_2"/>
+     <addaction name="actionVegenere_2"/>
+     <addaction name="actionSubstitution_2"/>
+     <addaction name="actionTransposition_2"/>
+    </widget>
+    <widget class="QMenu" name="menuSym_triques_2">
+     <property name="title">
+      <string>Symétriques</string>
+     </property>
+     <addaction name="actionDES_2"/>
+    </widget>
+    <widget class="QMenu" name="menuAsym_triques_2">
+     <property name="title">
+      <string>Asymétriques</string>
+     </property>
+     <addaction name="actionRSA_2"/>
+    </widget>
+    <addaction name="menuBasiques_2"/>
+    <addaction name="separator"/>
+    <addaction name="menuSym_triques_2"/>
+    <addaction name="separator"/>
+    <addaction name="menuAsym_triques_2"/>
+   </widget>
+   <widget class="QMenu" name="menuCrack">
+    <property name="title">
+     <string>Crack</string>
+    </property>
+    <widget class="QMenu" name="menuBasiques_3">
+     <property name="title">
+      <string>Basiques</string>
+     </property>
+     <addaction name="actionVegenere3"/>
+    </widget>
+    <addaction name="menuBasiques_3"/>
+    <addaction name="separator"/>
+    <addaction name="actionSymetriques_3"/>
+    <addaction name="separator"/>
+    <addaction name="actionAsym_triques_3"/>
+   </widget>
+   <addaction name="menuCryptage"/>
+   <addaction name="menuDecryptage"/>
+   <addaction name="menuCrack"/>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+  <action name="actionSymetriques_3">
+   <property name="text">
+    <string>Symétriques</string>
+   </property>
+  </action>
+  <action name="actionAsym_triques_3">
+   <property name="text">
+    <string>Asymétriques</string>
+   </property>
+  </action>
+  <action name="actionCesar">
+   <property name="text">
+    <string>César</string>
+   </property>
+  </action>
+  <action name="actionVegenere">
+   <property name="text">
+    <string>Vegenère</string>
+   </property>
+  </action>
+  <action name="actionSubstitution">
+   <property name="text">
+    <string>Substitution</string>
+   </property>
+  </action>
+  <action name="actionTransposition">
+   <property name="text">
+    <string>Transposition</string>
+   </property>
+  </action>
+  <action name="actionCesar_2">
+   <property name="text">
+    <string>César</string>
+   </property>
+  </action>
+  <action name="actionVegenere_2">
+   <property name="text">
+    <string>Vegenère</string>
+   </property>
+  </action>
+  <action name="actionSubstitution_2">
+   <property name="text">
+    <string>Substitution</string>
+   </property>
+  </action>
+  <action name="actionTransposition_2">
+   <property name="text">
+    <string>Transposition</string>
+   </property>
+  </action>
+  <action name="actionVegenere3">
+   <property name="text">
+    <string>Vegenère</string>
+   </property>
+  </action>
+  <action name="actionDES">
+   <property name="text">
+    <string>DES</string>
+   </property>
+  </action>
+  <action name="actionRSA">
+   <property name="text">
+    <string>RSA</string>
+   </property>
+  </action>
+  <action name="actionDES_2">
+   <property name="text">
+    <string>DES</string>
+   </property>
+  </action>
+  <action name="actionRSA_2">
+   <property name="text">
+    <string>RSA</string>
+   </property>
+  </action>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
