@@ -10,6 +10,44 @@
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 
+from flask import Flask, request,current_app
+import handler as H
+from PyQt5 import QtCore
+
+class Server_Worker(QtCore.QObject):
+    res = QtCore.pyqtSignal(dict)
+    app = Flask(__name__)
+
+    def __init__(self):
+        super().__init__()
+        self.Stat = False
+    
+
+    @app.route("/")
+    def hello_world():
+        return "<p>Hello, World!</p>"
+    
+
+    @app.route('/encrypt', methods=['POST'])
+    def encrypt():
+        requestJson = request.get_json()
+        H.validate_encrypt_request(requestJson)
+        sender = requestJson['sender']
+        algorithm = requestJson['algorithm']
+        message = requestJson['message']
+        key = requestJson['key']
+        typed = requestJson['type']
+        current_app.config['obj'].res.emit(requestJson)
+
+        return requestJson
+
+    def run(self):
+        self.Stat = True
+        self.app.config['obj'] = self
+        self.app.run(port=3000)
+    def stop(self):
+        self.Stat = False
+
 
 class Ui_Form(object):
     def setupUi(self, Form):
@@ -24,8 +62,16 @@ class Ui_Form(object):
         self.label_message.setAlignment(QtCore.Qt.AlignCenter)
         self.label_message.setObjectName("label_message")
         self.lineEdit_message = QtWidgets.QLineEdit(Form)
-        self.lineEdit_message.setGeometry(QtCore.QRect(100, 20, 444, 20))
+        self.lineEdit_message.setGeometry(QtCore.QRect(100, 20, 444, 61))
+        self.lineEdit_message.setDragEnabled(False)
         self.lineEdit_message.setObjectName("lineEdit_message")
+        self.textEdit = QtWidgets.QTextEdit(Form)
+        self.textEdit.setGeometry(QtCore.QRect(130, 100, 401, 71))
+        self.textEdit.setObjectName("textEdit")
+        self.pushButton_Submit = QtWidgets.QPushButton(Form)
+        self.pushButton_Submit.setEnabled(True)
+        self.pushButton_Submit.setGeometry(QtCore.QRect(130, 180, 75, 23))
+        self.pushButton_Submit.setObjectName("pushButton_Submit")
 
         self.retranslateUi(Form)
         QtCore.QMetaObject.connectSlotsByName(Form)
@@ -34,6 +80,22 @@ class Ui_Form(object):
         _translate = QtCore.QCoreApplication.translate
         Form.setWindowTitle(_translate("Form", "Form"))
         self.label_message.setText(_translate("Form", "Message"))
+        self.pushButton_Submit.setText(_translate("MainWindow", "Submit"))
+
+        self.pushButton_Submit.clicked.connect(lambda: self.p(self.char))
+
+
+    
+    def p2p_even_recive(self):
+        if(self.server_worker.Stat == False):
+            self.server_worker.moveToThread(self.thread)
+            self.thread.started.connect(self.server_worker.run)
+            self.server_worker.res.connect(self.p)
+            self.thread.start()
+
+ 
+    def p(self,val):
+        print(val)
 
 
 if __name__ == "__main__":

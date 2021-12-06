@@ -15,9 +15,45 @@ import Cesar as C
 import Substitution as S
 import Transposition as T
 import qdarkstyle
-
-
 from PyQt5 import QtCore, QtGui, QtWidgets
+
+from flask import Flask, request,current_app
+import handler as H
+from PyQt5 import QtCore
+
+class Server_Worker(QtCore.QObject):
+    res = QtCore.pyqtSignal(dict)
+    app = Flask(__name__)
+
+    def __init__(self):
+        super().__init__()
+        self.Stat = False
+    
+
+    @app.route("/")
+    def hello_world():
+        return "<p>Hello, World!</p>"
+    
+
+    @app.route('/encrypt', methods=['POST'])
+    def encrypt():
+        requestJson = request.get_json()
+        H.validate_encrypt_request(requestJson)
+        sender = requestJson['sender']
+        algorithm = requestJson['algorithm']
+        message = requestJson['message']
+        key = requestJson['key']
+        typed = requestJson['type']
+        current_app.config['obj'].res.emit(requestJson)
+
+        return requestJson
+
+    def run(self):
+        self.Stat = True
+        self.app.config['obj'] = self
+        self.app.run(port=3000)
+    def stop(self):
+        self.Stat = False
 
 
 class Ui_MainWindow(object):
@@ -319,6 +355,21 @@ class Ui_MainWindow(object):
 
     def trans_dec(self):
         pass
+
+    def p2p_even_recive(self):
+        if(self.server_worker.Stat == False):
+            self.server_worker.moveToThread(self.thread)
+            self.thread.started.connect(self.server_worker.run)
+            self.server_worker.res.connect(self.p)
+            self.thread.start()
+
+ 
+    def p(self,val):
+        print(val)
+
+# add this in your QMainWindow init function
+# self.server_worker = Server_Worker()
+# self.thread = QtCore.QThread()
 
 if __name__ == "__main__":
     import sys
