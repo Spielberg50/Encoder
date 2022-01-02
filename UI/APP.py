@@ -246,6 +246,7 @@ class Ui_MainWindow(object):
         self.actionCesar_2.triggered.connect(lambda: self.num("11"))
         self.actionVegenere_2.triggered.connect(lambda: self.car("12"))
         self.actionSubstitution_2.triggered.connect(lambda: self.car("13"))
+        self.actionTransposition_2.triggered.connect(lambda: self.num("14"))
 
         self.pushButton_Submit.clicked.connect(lambda: self.submit(self.char))
 
@@ -265,6 +266,8 @@ class Ui_MainWindow(object):
             self.veg_dec()
         if (char=="13"):
             self.sub_dec()
+        if (char=="14"):
+            self.trans_dec()
         
 
     def car(self,char):
@@ -354,7 +357,12 @@ class Ui_MainWindow(object):
         self.TextEdit_result.setText(encrypted)
 
     def trans_dec(self):
-        pass
+        self.text = self.TextEdit_message.toPlainText()
+        self.key = int(self.LineEdit_key.text())
+        print(self.text+"\n")
+        print(self.keyword+"\n")
+        deccrypted=T.decrypt_trans(self.text,self.key)
+        self.TextEdit_result.setText(deccrypted)
 
     def p2p_even_recive(self):
         if(self.server_worker.Stat == False):

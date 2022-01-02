@@ -210,6 +210,7 @@ class Ui_MainWindow(object):
         self.actionCesar_2.triggered.connect(lambda: self.num("11"))
         self.actionVegenere_2.triggered.connect(lambda: self.car("12"))
         self.actionSubstitution_2.triggered.connect(lambda: self.car("13"))
+        self.actionTransposition_2.triggered.connect(lambda: self.num("14"))
 
         self.pushButton_Submit.clicked.connect(lambda: self.submit(self.char))
 
@@ -229,7 +230,8 @@ class Ui_MainWindow(object):
             self.veg_dec()
         if (char=="13"):
             self.sub_dec()
-        
+        if (char=="14"):
+            self.trans_dec()
 
     def car(self,char):
 
@@ -314,11 +316,16 @@ class Ui_MainWindow(object):
         self.key = self.lineEdit_key.text()
         print(self.text+"\n")
         print(self.keyword+"\n")
-        encrypted=S.decrypt_sub(self.text,self.key,self.alphabet)
-        self.lineEdit_result.setText(encrypted)
+        deccrypted=S.decrypt_sub(self.text,self.key,self.alphabet)
+        self.lineEdit_result.setText(deccrypted)
 
     def trans_dec(self):
-        pass
+        self.text = self.lineEdit_message.text()
+        self.key = int(self.lineEdit_key.text())
+        print(self.text+"\n")
+        print(self.keyword+"\n")
+        deccrypted=T.decrypt_trans(self.text,self.key)
+        self.lineEdit_result.setText(deccrypted)
 
 if __name__ == "__main__":
     import sys

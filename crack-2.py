@@ -2,7 +2,9 @@ import Vegenere_min as V
 
 alphabet="abcdefghijklmnopqrstuvwxyz"
 user_input = 'mi huzl wvts dtlw irvl kijrvnvi se mhxw gekkrykeq tyir mfb dyyolkglji gtugtqlx mex fzglw bej xwysej xw nt vrbv vtskxu e aa dtlwdn dtlw rejm fppii idvrehnh xduk eh qdnux hwi cffpi ra'
-user_input="escmsju gdpqtqx poptc zdxw yh wjlw bhhtfmc escvsxu tgrkgdqbh rdxztdy shfjw hteei segiexw"
+# user_input="escmsju gdpqtqx poptc zdxw yh wjlw bhhtfmc escvsxu tgrkgdqbh rdxztdy shfjw hteei segiexw"
+user_input="escmsjuntvyxvgwdvtiisgmchftqcppmcdgwlehhwidfahsggmcdxtxvxqxtuvdjeilscweqoipxfdqwdlvroekligxrxyigvmihpnqe"
+user_input="ijvbxblnpzrsfwqjbqzwbcnjuubuxrwcbxcbwubsrsjjrinpjcrirxscp"
 text = user_input.split()
 text = ''.join(text)
 
@@ -178,9 +180,10 @@ key=""
 for i in range(key_length):
     key+=frequency_list_sorted[key_rates[i]]
 
-# print("list_sorted_list",list_sorted_list)
-# print("frequency_list_values",frequency_list_values)
-# print("frequency_list",frequency_rate)
+print("list_sorted_list",list_sorted_list)
+print("frequency_list_values",frequency_list_values)
+print("frequency_list",frequency_rate)
+
 print(key_rates)
 print(key)
 
@@ -189,7 +192,7 @@ print("cypher_text : ",cypher_text)
 print("decrypted : ",decrypted)
 
 """
-# to be continued, to creating all combinaison of keys
+# to be continued, to create all combinaison of keys
 
 frequency_rate_copy=frequency_rate.copy()
 keys_rates=[[] for x in range(8)]
