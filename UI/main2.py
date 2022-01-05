@@ -11,7 +11,6 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 
 from flask import Flask, request,current_app
-import handler as H
 from PyQt5 import QtCore
 
 class Server_Worker(QtCore.QObject):

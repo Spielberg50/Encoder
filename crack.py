@@ -67,8 +67,6 @@ sup=""
 if(len(text)%key_length!=0):
     sup=parts.pop()
 
-print(parts)
-print(sup)
 #create empty lists depending on key length
 initials=[[] for x in range(key_length)]
 
@@ -181,11 +179,9 @@ for i in range(key_length):
 print(key_rates)
 print(key)
 
-keywords=V.generateKey(cypher_text,key)
-decrypted=V.decrypt_veg(user_input,keywords)
+decrypted=V.decrypt_veg(user_input,key)
 print("cypher_text : ",cypher_text)
 print("decrypted : ",decrypted)
-print(keywords)
 
 # string = "test de programmation de chiffrement bioinfo bonjour table salle informatique imprimante chaise\
 #         miroire longueur largeur bouteille souris ajouter rechercher clavier bien trop"

@@ -14,46 +14,13 @@ import Vegenere_min as V
 import Cesar as C
 import Substitution as S
 import Transposition as T
+import crack_fonctions as crack
 import qdarkstyle
 from PyQt5 import QtCore, QtGui, QtWidgets
 
-from flask import Flask, request,current_app
-import handler as H
 from PyQt5 import QtCore
 
-class Server_Worker(QtCore.QObject):
-    res = QtCore.pyqtSignal(dict)
-    app = Flask(__name__)
 
-    def __init__(self):
-        super().__init__()
-        self.Stat = False
-    
-
-    @app.route("/")
-    def hello_world():
-        return "<p>Hello, World!</p>"
-    
-
-    @app.route('/encrypt', methods=['POST'])
-    def encrypt():
-        requestJson = request.get_json()
-        H.validate_encrypt_request(requestJson)
-        sender = requestJson['sender']
-        algorithm = requestJson['algorithm']
-        message = requestJson['message']
-        key = requestJson['key']
-        typed = requestJson['type']
-        current_app.config['obj'].res.emit(requestJson)
-
-        return requestJson
-
-    def run(self):
-        self.Stat = True
-        self.app.config['obj'] = self
-        self.app.run(port=3000)
-    def stop(self):
-        self.Stat = False
 
 
 class Ui_MainWindow(object):
@@ -98,6 +65,9 @@ class Ui_MainWindow(object):
         self.TextEdit_message.setAlignment(QtCore.Qt.AlignLeading|QtCore.Qt.AlignLeft|QtCore.Qt.AlignTop)
         self.TextEdit_message.setReadOnly(True)
         self.TextEdit_message.setObjectName("TextEdit_message")
+        font_2 = QtGui.QFont()
+        font_2.setPointSize(12)
+        self.TextEdit_message.setFont(font_2)
         self.LineEdit_key = QtWidgets.QLineEdit(self.centralwidget)
         self.LineEdit_key.setGeometry(QtCore.QRect(130, 190, 421, 20))
         self.LineEdit_key.setReadOnly(True)
@@ -107,6 +77,7 @@ class Ui_MainWindow(object):
         self.TextEdit_result.setAlignment(QtCore.Qt.AlignLeading|QtCore.Qt.AlignLeft|QtCore.Qt.AlignTop)
         self.TextEdit_result.setReadOnly(True)
         self.TextEdit_result.setObjectName("TextEdit_result")
+        self.TextEdit_result.setFont(font_2)
         self.pushButton_Submit = QtWidgets.QPushButton(self.centralwidget)
         self.pushButton_Submit.setEnabled(False)
         self.pushButton_Submit.setGeometry(QtCore.QRect(260, 370, 75, 23))
@@ -206,7 +177,7 @@ class Ui_MainWindow(object):
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
-        MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
+        MainWindow.setWindowTitle(_translate("MainWindow", "Encoder"))
         self.label_message.setText(_translate("MainWindow", "Message"))
         self.label_key.setText(_translate("MainWindow", "Clé"))
         self.label_result.setText(_translate("MainWindow", "Résultat"))
@@ -248,7 +219,10 @@ class Ui_MainWindow(object):
         self.actionSubstitution_2.triggered.connect(lambda: self.car("13"))
         self.actionTransposition_2.triggered.connect(lambda: self.num("14"))
 
+        self.actionVegenere3.triggered.connect(lambda: self.num("21"))
         self.pushButton_Submit.clicked.connect(lambda: self.submit(self.char))
+        
+
 
     def submit(self,char):
         if (char=="01"):
@@ -268,6 +242,9 @@ class Ui_MainWindow(object):
             self.sub_dec()
         if (char=="14"):
             self.trans_dec()
+
+        if (char=="21"):
+            self.crack_veg()
         
 
     def car(self,char):
@@ -360,24 +337,20 @@ class Ui_MainWindow(object):
         self.text = self.TextEdit_message.toPlainText()
         self.key = int(self.LineEdit_key.text())
         print(self.text+"\n")
-        print(self.keyword+"\n")
-        deccrypted=T.decrypt_trans(self.text,self.key)
-        self.TextEdit_result.setText(deccrypted)
+        print(self.key+"\n")
+        decrypted=T.decrypt_trans(self.text,self.key)
+        self.TextEdit_result.setText(decrypted)
 
-    def p2p_even_recive(self):
-        if(self.server_worker.Stat == False):
-            self.server_worker.moveToThread(self.thread)
-            self.thread.started.connect(self.server_worker.run)
-            self.server_worker.res.connect(self.p)
-            self.thread.start()
+    def crack_veg(self):
+        print("hi")
+        self.text = self.TextEdit_message.toPlainText()
+        self.key = int(self.LineEdit_key.text())
+        print(self.text+"\n")
+        print(str(self.key)+"\n")
+        result= crack.crack(self.text,self.key)
+        print(result)
+        self.TextEdit_result.setText(str(result))
 
- 
-    def p(self,val):
-        print(val)
-
-# add this in your QMainWindow init function
-# self.server_worker = Server_Worker()
-# self.thread = QtCore.QThread()
 
 if __name__ == "__main__":
     import sys
