@@ -15,13 +15,47 @@ import Cesar as C
 import Substitution as S
 import Transposition as T
 import crack_fonctions as crack
+import KNN as DES
 import qdarkstyle
 from PyQt5 import QtCore, QtGui, QtWidgets
 
 from PyQt5 import QtCore
 
+from flask import Flask, request,current_app
+sys.path.insert(1, 'D:/Etude/BSD/TP/server/tp_m2_bsd')
+from handler import validate_encrypt_request
+import requests
+import netifaces
+import json
+class Server_Worker(QtCore.QObject):
+    res = QtCore.pyqtSignal(dict)
+    app = Flask(__name__)
 
+    def __init__(self):
+        super().__init__()
+    
 
+    @app.route("/")
+    def hello_world():
+        return "<p>Hello, World!</p>"
+    
+
+    @app.route('/encrypt', methods=['POST'])
+    def encrypt():
+        requestJson = request.get_json()
+        validate_encrypt_request(requestJson)
+        sender = requestJson['sender']
+        algorithm = requestJson['algorithm']
+        message = requestJson['message']
+        key = requestJson['key']
+        typed = requestJson['type']
+        current_app.config['obj'].res.emit(requestJson)
+
+        return requestJson
+
+    def run(self):
+        self.app.config['obj'] = self
+        self.app.run(host="0.0.0.0",port=3000)
 
 class Ui_MainWindow(object):
     text=""
@@ -30,9 +64,10 @@ class Ui_MainWindow(object):
     key=0
     alphabet = "abcdefghijklmnopqrstuvwxyz"
     char=""
+    list_dict={}
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(587, 451)
+        MainWindow.resize(587, 600)
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
         self.label_message = QtWidgets.QLabel(self.centralwidget)
@@ -82,6 +117,10 @@ class Ui_MainWindow(object):
         self.pushButton_Submit.setEnabled(False)
         self.pushButton_Submit.setGeometry(QtCore.QRect(260, 370, 75, 23))
         self.pushButton_Submit.setObjectName("pushButton_Submit")
+
+        self.comboBox = QtWidgets.QComboBox(self.centralwidget)
+        self.comboBox.setGeometry(QtCore.QRect(398, 460, 121, 22))
+        self.comboBox.setObjectName("comboBox")
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(MainWindow)
         self.menubar.setGeometry(QtCore.QRect(0, 0, 587, 21))
@@ -172,8 +211,22 @@ class Ui_MainWindow(object):
         self.menubar.addAction(self.menuDecryptage.menuAction())
         self.menubar.addAction(self.menuCrack.menuAction())
 
+        self.pushButton_Envoye = QtWidgets.QPushButton(self.centralwidget)
+        self.pushButton_Envoye.setGeometry(QtCore.QRect(420, 500, 75, 23))
+        self.pushButton_Envoye.setObjectName("pushButton_Envoye")
+        self.pushButton_request = QtWidgets.QPushButton(self.centralwidget)
+        self.pushButton_request.setGeometry(QtCore.QRect(300, 460, 75, 23))
+        self.pushButton_request.setObjectName("pushButton_request")
+
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
+
+        self.server_worker = Server_Worker()
+        self.thread = QtCore.QThread()
+        self.server_worker.moveToThread(self.thread)
+        self.thread.started.connect(self.server_worker.run)
+        self.server_worker.res.connect(self.p)
+        self.thread.start()
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
@@ -183,6 +236,8 @@ class Ui_MainWindow(object):
         self.label_result.setText(_translate("MainWindow", "Résultat"))
         self.TextEdit_message.setPlaceholderText(_translate("MainWindow", "Bienvenu, vous devez choisir l\'algorithme dans le menu"))
         self.pushButton_Submit.setText(_translate("MainWindow", "Submit"))
+        self.pushButton_Envoye.setText(_translate("MainWindow", "Envoyer"))
+        self.pushButton_request.setText(_translate("MainWindow", "Liste"))
         self.menuCryptage.setTitle(_translate("MainWindow", "Cryptage"))
         self.menuBasiques.setTitle(_translate("MainWindow", "Basiques"))
         self.menuSym_triques.setTitle(_translate("MainWindow", "Symétriques"))
@@ -222,6 +277,104 @@ class Ui_MainWindow(object):
         self.actionVegenere3.triggered.connect(lambda: self.num("21"))
         self.pushButton_Submit.clicked.connect(lambda: self.submit(self.char))
         
+        self.pushButton_Envoye.clicked.connect(self.send)
+        self.pushButton_request.clicked.connect(self.req)
+
+    def p(self,val):
+    # add this in your QMainWindow class and write UI changes here the val varible is what result of the post request
+        print(val)
+        self.TextEdit_result.setText(str(val))
+        self.TextEdit_message.setText(val["message"])
+        decrypted=""
+
+        _translate = QtCore.QCoreApplication.translate
+
+        if(val["algorithm"]=="ceasar"):
+            self.onlyInt = QtGui.QIntValidator()
+            self.LineEdit_key.setValidator(self.onlyInt)
+            self.LineEdit_key.setText(str(val["key"]))
+            decrypted=C.decrypt(val["message"],val["key"])
+
+        if(val["algorithm"]=="vigenere"):
+            self.LineEdit_key.setText(str(val["key"]))
+            self.onlyInt = QtGui.QRegExpValidator(QtCore.QRegExp("[a-z A-Z]+"))
+            self.LineEdit_key.setValidator(self.onlyInt)
+            decrypted=V.decrypt_veg(val["message"],val["key"])
+
+        if(val["algorithm"]=="substitution"):
+            self.LineEdit_key.setText(str(val["key"]))
+            self.onlyInt = QtGui.QRegExpValidator(QtCore.QRegExp("[a-z A-Z]+"))
+            self.LineEdit_key.setValidator(self.onlyInt)
+            decrypted=S.decrypt_sub(val["message"],val["key"],self.alphabet) 
+
+        if(val["algorithm"]=="transposition"):
+            self.onlyInt = QtGui.QIntValidator()
+            self.LineEdit_key.setValidator(self.onlyInt)
+            self.LineEdit_key.setText(str(val["key"]))
+            decrypted=T.decrypt_trans(self.text,self.key)
+
+        self.TextEdit_result.setText(decrypted)
+
+    def send(self):
+        data = json.loads(self.TextEdit_result.toPlainText())
+        # data = dict(self.textEdit_2.toPlainText())
+
+        code=self.send_data(data['ip'],data['sender'],data['algorithm'],data['message'],data['key'])
+        if code==200:
+            print("youppiiii")
+        else:
+            print("mamchatch")
+
+    
+    def request(self,name,state=True):
+        data = {'name':name,'active':state}
+        try:
+                x = requests.post(f"http://{self.get_gatway_ip()}:3000/get-peers",json=data)
+                if x.status_code == 200:
+                        return self.extract_list_of_users(x.json())
+                else:
+                        return {}
+        except:
+                return {}
+
+    def extract_list_of_users(self,peer_data):
+        temp_list = {}
+        if len(peer_data) == []:
+                return temp_list
+        else:
+                for user in peer_data:
+                        if user['active'] == True:
+                                temp_list[user['ip']] = user['name']
+        return temp_list
+
+    def send_data(self,ip,sender,algo,msg,key):
+            data = {"sender": sender ,"algorithm": algo ,"message": msg ,"key": key ,"type": "encrypt"}
+            url = f'http://{ip}:3000/encrypt'
+            try:
+                    x = requests.post(url, json=data)
+                    return x.status_code
+            except:
+                    return -1
+
+    def get_gatway_ip(self):
+        try:
+                gateways = netifaces.gateways()
+                defaults = gateways.get("default")
+                return defaults[2][0]
+        except:
+                raise Exception('make sure you are online...')
+    def req(self):
+        # lv=str(self.request("sifou",True))
+        # self.TextEdit_message.setText(lv)
+
+        liste=self.request("sifou",True)
+        for i in liste.keys():
+            self.list_dict[liste[i]]=i
+
+        self.comboBox.clear()
+        self.comboBox.addItems(self.list_dict.keys())
+
+
 
 
     def submit(self,char):
@@ -351,6 +504,16 @@ class Ui_MainWindow(object):
         print(result)
         self.TextEdit_result.setText(str(result))
 
+    def des_enc(self):
+        self.text = self.TextEdit_message.toPlainText()
+        self.keyword = self.LineEdit_key.text()
+        print(self.text+"\n")
+        print(self.key+"\n")
+        encrypted=S.decrypt_sub(self.text,self.key,self.alphabet)
+        self.TextEdit_result.setText(encrypted)
+
+    def des_dec(self):
+        pass
 
 if __name__ == "__main__":
     import sys

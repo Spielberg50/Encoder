@@ -252,7 +252,7 @@ if (add!=8):
 hex_output = ascii_to_hex(ascii_input)
 hex_plain_text = hex_output.upper().decode("utf-8")
 
-ascii_key = 'MYNAMEIS'
+ascii_key = 'testtest'
 hex_key = ascii_to_hex(ascii_key)
 print('hex result is', hex_key.upper())
 hex_key = hex_key.upper().decode("utf-8")
@@ -345,18 +345,64 @@ for i in range(blocks):
     print("Text : ", text)
 print("Plain Text : ", bytearray.fromhex(text).decode())
 
-# print("Encryption")
-# cipher_text = bin2hex(encrypt(pt, rkb, rk))
-# print("Cipher Text : ", cipher_text)
 
+def decrypt_des(cipher_text, key):
+    add=8-len(cipher_text)%8
+    if (add!=8):
+        for i in range(add):
+            cipher_text+="#"
 
+    #convert from text to hexadecimal
+    hex_output = ascii_to_hex(cipher_text)
+    hex_plain_text = hex_output.upper().decode("utf-8")
 
-# # print("Plain Text : ", bytearray.fromhex(text).decode())
-# print("Decryption")
-# rkb_rev = rkb[::-1]
-# rk_rev = rk[::-1]
-# text = bin2hex(encrypt(cipher_text, rkb_rev, rk_rev))
-# print(text)
-# print("Plain Text : ", bytearray.fromhex(text).decode())
+    hex_key = ascii_to_hex(key)
+    print('hex result is', hex_key.upper())
+    hex_key = hex_key.upper().decode("utf-8")
+    print(hex_key)
+    # Key generation
+    # --hex to binary
 
+    key = hex2bin(hex_key)
+    pt = hex_plain_text
 
+    left = key[0:28]  # rkb for RoundKeys in binary
+    right = key[28:56]  # rk for RoundKeys in hexadecimal
+
+    rkb = []
+    rk = []
+    for i in range(0, 16):
+        # Shifting the bits by nth shifts by checking from shift table
+        left = shift_left(left, shift_table[i])
+        right = shift_left(right, shift_table[i])
+
+        # Combination of left and right string
+        combine_str = left + right
+
+        # Compression of key from 56 to 48 bits
+        round_key = permute(combine_str, key_comp, 48)
+
+        rkb.append(round_key)
+
+    blocks=int(len(cipher_text)/16)
+
+    rkb_rev = rkb[::-1]
+    rk_rev = rk[::-1]
+    text=""
+    bloc=cipher_text[:16]
+    for i in range(blocks):
+        if(i==blocks):
+            pass
+        text += bin2hex(encrypt(bloc, rkb_rev, rk_rev))
+        bloc=cipher_text[bloc_length*(i+1):bloc_length*(i+2)]
+
+    return text
+    
+def main():
+    print("Decreption")
+    cipher = "DA394ECCC0D417DBD4CA3E484CEBF976A32AD92C0D451F16"
+    keyt="MYNAMEIS"
+    decrypt_des(cipher,keyt)
+
+if __name__ == '__main__':
+    main()
