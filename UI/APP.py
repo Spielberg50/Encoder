@@ -274,6 +274,10 @@ class Ui_MainWindow(object):
         self.actionSubstitution_2.triggered.connect(lambda: self.car("13"))
         self.actionTransposition_2.triggered.connect(lambda: self.num("14"))
 
+        self.actionDES.triggered.connect(lambda: self.car("05"))
+        self.actionDES_2.triggered.connect(lambda: self.car("15"))
+
+
         self.actionVegenere3.triggered.connect(lambda: self.num("21"))
         self.pushButton_Submit.clicked.connect(lambda: self.submit(self.char))
         
@@ -367,7 +371,7 @@ class Ui_MainWindow(object):
         # lv=str(self.request("sifou",True))
         # self.TextEdit_message.setText(lv)
 
-        liste=self.request("sifou",True)
+        liste=self.request("SOUKEUR",True)
         for i in liste.keys():
             self.list_dict[liste[i]]=i
 
@@ -386,6 +390,8 @@ class Ui_MainWindow(object):
             self.sub_enc()
         if (char=="04"):
             self.trans_enc()
+        if (char=="05"):
+            self.des_enc()
         
         if (char=="11"):
             self.cesar_dec()
@@ -395,6 +401,8 @@ class Ui_MainWindow(object):
             self.sub_dec()
         if (char=="14"):
             self.trans_dec()
+        if (char=="15"):
+            self.des_dec()
 
         if (char=="21"):
             self.crack_veg()
@@ -508,12 +516,19 @@ class Ui_MainWindow(object):
         self.text = self.TextEdit_message.toPlainText()
         self.keyword = self.LineEdit_key.text()
         print(self.text+"\n")
-        print(self.key+"\n")
-        encrypted=S.decrypt_sub(self.text,self.key,self.alphabet)
+        print(self.keyword+"\n")
+        encrypted=DES.encrypt_des(self.text,self.keyword)
         self.TextEdit_result.setText(encrypted)
 
     def des_dec(self):
-        pass
+        self.text = self.TextEdit_message.toPlainText()
+        self.keyword = self.LineEdit_key.text()
+        print(self.text+"\n")
+        print(self.keyword+"\n")
+        decrypted=DES.decrypt_des(self.text,self.keyword)
+        plain_text=bytearray.fromhex(decrypted).decode()
+        plain_text=plain_text.replace("#","")
+        self.TextEdit_result.setText(plain_text)
 
 if __name__ == "__main__":
     import sys

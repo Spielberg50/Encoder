@@ -195,7 +195,7 @@ def encrypt(pt, rkb, rk):
 
     # Initial Permutation
     pt = permute(pt, initial_perm, 64)
-    print("After initial permutation", bin2hex(pt))
+    # print("After initial permutation", bin2hex(pt))
 
     # Splitting
     left = pt[0:32]
@@ -225,7 +225,7 @@ def encrypt(pt, rkb, rk):
         # Swapper
         if (i != 15):
             left, right = right, left
-        print("Round ", i + 1, " ", bin2hex(left), " ", bin2hex(right), " ", rk[i])
+        # print("Round ", i + 1, " ", bin2hex(left), " ", bin2hex(right), " ", rk[i])
 
     # Combination
     combine = left + right
@@ -254,9 +254,10 @@ hex_plain_text = hex_output.upper().decode("utf-8")
 
 ascii_key = 'testtest'
 hex_key = ascii_to_hex(ascii_key)
-print('hex result is', hex_key.upper())
+# print('hex result is', hex_key.upper())
 hex_key = hex_key.upper().decode("utf-8")
-print(hex_key)
+# print(hex_key)
+
 # Key generation
 # --hex to binary
 
@@ -318,7 +319,7 @@ for i in range(0, 16):
     rkb.append(round_key)
     rk.append(bin2hex(round_key))
 
-
+"""
 print("Encryption")
 cipher_text=""
 blocks=int(len(pt)/16)
@@ -344,27 +345,24 @@ for i in range(blocks):
     bloc=cipher_text[bloc_length*(i+1):bloc_length*(i+2)]
     print("Text : ", text)
 print("Plain Text : ", bytearray.fromhex(text).decode())
+"""
 
-
-def decrypt_des(cipher_text, key):
-    add=8-len(cipher_text)%8
+def encrypt_des(message, key):
+    add=8-len(message)%8
     if (add!=8):
         for i in range(add):
-            cipher_text+="#"
-
-    #convert from text to hexadecimal
-    hex_output = ascii_to_hex(cipher_text)
+            message+="#"
+    
+    hex_output = ascii_to_hex(message)
     hex_plain_text = hex_output.upper().decode("utf-8")
 
-    hex_key = ascii_to_hex(key)
-    print('hex result is', hex_key.upper())
+    hex_key = ascii_to_hex(ascii_key)
     hex_key = hex_key.upper().decode("utf-8")
-    print(hex_key)
-    # Key generation
-    # --hex to binary
 
     key = hex2bin(hex_key)
     pt = hex_plain_text
+
+    key = permute(key, keyp, 56)
 
     left = key[0:28]  # rkb for RoundKeys in binary
     right = key[28:56]  # rk for RoundKeys in hexadecimal
@@ -383,26 +381,88 @@ def decrypt_des(cipher_text, key):
         round_key = permute(combine_str, key_comp, 48)
 
         rkb.append(round_key)
+        rk.append(bin2hex(round_key))
+
+    cipher_text=""
+    blocks=int(len(pt)/16)
+    bloc=pt[:16]
+    bloc_length=16
+    print(pt[48:64])
+    for i in range(blocks):
+        if(i==blocks):
+            pass
+        cipher_text += bin2hex(encrypt(bloc, rkb, rk))
+        bloc=pt[bloc_length*(i+1):bloc_length*(i+2)]
+
+    return cipher_text
+
+
+def decrypt_des(cipher_text, ascii_key):
+
+    hex_key = ascii_to_hex(ascii_key)
+    hex_key = hex_key.upper().decode("utf-8")
+    # Key generation
+    # --hex to binary
+
+    key = hex2bin(hex_key)
+
+    key = permute(key, keyp, 56)
+
+    left = key[0:28]  # rkb for RoundKeys in binary
+    right = key[28:56]  # rk for RoundKeys in hexadecimal
+
+    rkb = []
+    rk = []
+    for i in range(0, 16):
+        # Shifting the bits by nth shifts by checking from shift table
+        left = shift_left(left, shift_table[i])
+        right = shift_left(right, shift_table[i])
+
+        # Combination of left and right string
+        combine_str = left + right
+
+        # Compression of key from 56 to 48 bits
+        round_key = permute(combine_str, key_comp, 48)
+
+        rkb.append(round_key)
+        rk.append(bin2hex(round_key))
 
     blocks=int(len(cipher_text)/16)
 
     rkb_rev = rkb[::-1]
     rk_rev = rk[::-1]
     text=""
+    bloc_length=16
     bloc=cipher_text[:16]
     for i in range(blocks):
         if(i==blocks):
             pass
         text += bin2hex(encrypt(bloc, rkb_rev, rk_rev))
         bloc=cipher_text[bloc_length*(i+1):bloc_length*(i+2)]
+        
 
     return text
     
 def main():
-    print("Decreption")
-    cipher = "DA394ECCC0D417DBD4CA3E484CEBF976A32AD92C0D451F16"
-    keyt="MYNAMEIS"
-    decrypt_des(cipher,keyt)
+    print("\n\n\nTest fonction\n\n\n")
+    # cipher = "DA394ECCC0D417DBD4CA3E484CEBF976A32AD92C0D451F16"
 
-if __name__ == '__main__':
-    main()
+    ascii_input = 'Im testing DES thank yu'
+    ascii_key = 'testtest'
+
+    print("***Encription fonction***")
+    result=encrypt_des(ascii_input,ascii_key)
+    print("the result is :",result)
+
+    print("***Decription fonction***")
+    plain_text=decrypt_des(result,ascii_key)
+    print("key :", ascii_key)
+    print("plain text :",plain_text)
+    print("Plain Text : ", bytearray.fromhex(plain_text).decode())
+
+
+
+    
+
+# if __name__ == '__main__':
+#     main()
