@@ -18,6 +18,7 @@ import crack_fonctions as crack
 import KNN as DES
 import qdarkstyle
 from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5.QtWidgets import QMessageBox
 
 from PyQt5 import QtCore
 
@@ -65,6 +66,7 @@ class Ui_MainWindow(object):
     alphabet = "abcdefghijklmnopqrstuvwxyz"
     char=""
     list_dict={}
+    btn_clicked=""
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(587, 600)
@@ -315,7 +317,17 @@ class Ui_MainWindow(object):
             self.onlyInt = QtGui.QIntValidator()
             self.LineEdit_key.setValidator(self.onlyInt)
             self.LineEdit_key.setText(str(val["key"]))
-            decrypted=T.decrypt_trans(self.text,self.key)
+            decrypted=T.decrypt_trans(val["message"],val["key"])
+
+        if(val["algorithm"]=="des"):
+            self.onlyInt = QtGui.QRegExpValidator(QtCore.QRegExp("[a-z A-Z]+"))
+            self.LineEdit_key.setValidator(self.onlyInt)
+            self.LineEdit_key.setText(str(val["key"]))
+            if len(str(val["key"]))==8:
+                decrypted=DES.decrypt_des(val["message"],val["key"])
+            else:
+                self.show_popup_error('La longueur de la clé doit etre 8\nvous avez mis une cle de taille '+str(len(self.keyword)))
+
 
         self.TextEdit_result.setText(decrypted)
 
@@ -409,7 +421,7 @@ class Ui_MainWindow(object):
         
 
     def car(self,char):
-
+        self.show_popup_info('Vous devez donner le text et la clé "caractères"')
         _translate = QtCore.QCoreApplication.translate
         self.char=char
         self.TextEdit_message.setReadOnly(False)
@@ -421,7 +433,7 @@ class Ui_MainWindow(object):
         self.LineEdit_key.setPlaceholderText(_translate("MainWindow", "Vous devez mettre une chaine de caractères"))
 
     def num(self,char):
-
+        self.show_popup_info('Vous devez donner le text et la clé "numeric"')
         _translate = QtCore.QCoreApplication.translate
         self.char= char
         self.TextEdit_message.setReadOnly(False)
@@ -517,18 +529,54 @@ class Ui_MainWindow(object):
         self.keyword = self.LineEdit_key.text()
         print(self.text+"\n")
         print(self.keyword+"\n")
-        encrypted=DES.encrypt_des(self.text,self.keyword)
-        self.TextEdit_result.setText(encrypted)
+        if len(self.keyword)==8:
+            encrypted=DES.encrypt_des(self.text,self.keyword)
+            self.TextEdit_result.setText(encrypted)
+        else:
+            self.show_popup_error('La longueur de la clé doit etre 8\nvous avez mis une cle de taille '+str(len(self.keyword)))
 
     def des_dec(self):
         self.text = self.TextEdit_message.toPlainText()
         self.keyword = self.LineEdit_key.text()
-        print(self.text+"\n")
-        print(self.keyword+"\n")
-        decrypted=DES.decrypt_des(self.text,self.keyword)
-        plain_text=bytearray.fromhex(decrypted).decode()
-        plain_text=plain_text.replace("#","")
-        self.TextEdit_result.setText(plain_text)
+        if len(self.keyword)==8:
+            print(self.text+"\n")
+            print(self.keyword+"\n")
+            decrypted=DES.decrypt_des(self.text,self.keyword)
+            plain_text=bytearray.fromhex(decrypted).decode()
+            plain_text=plain_text.replace("#","")
+            self.TextEdit_result.setText(plain_text)
+        else:
+            self.show_popup_error('La longueur de la clé doit etre 8\nvous avez mis une cle de taille '+str(len(self.keyword)))
+
+
+    def show_popup_info(self,str):
+        msg = QMessageBox()
+        msg.setWindowTitle("Indication")
+        msg.setText(str)
+        msg.setIcon(QMessageBox.Information)
+        x=msg.exec_()
+
+    def show_popup_qst(self,str):
+        msg = QMessageBox()
+        msg.setWindowTitle("Question")
+        msg.setText(str)
+        msg.setIcon(QMessageBox.Question)
+        msg.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
+        # msg.buttonClicked.connect(self.btn_clicked)
+        x=msg.exec_()
+        if x == QMessageBox.Yes:
+            print('Yes clicked',x)
+            self.btn_clicked="Yes"
+        if x == QMessageBox.No:
+            print('No clicked',x)
+            self.btn_clicked="No"
+
+    def show_popup_error(self,str):
+        msg = QMessageBox()
+        msg.setWindowTitle("Error")
+        msg.setText(str)
+        msg.setIcon(QMessageBox.Critical)
+        x=msg.exec_()
 
 if __name__ == "__main__":
     import sys
