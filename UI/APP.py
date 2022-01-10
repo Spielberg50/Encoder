@@ -521,8 +521,16 @@ class Ui_MainWindow(object):
         print(self.text+"\n")
         print(str(self.key)+"\n")
         result= crack.crack(self.text,self.key)
-        print(result)
-        self.TextEdit_result.setText(str(result))
+        # print(result)
+        intermediaire=""
+        final_result=""
+        for i in range(len(result)):
+            intermediaire="texte : "+result[i][0]+" | clé :"+result[i][1]+"\n"
+            final_result+=intermediaire
+            final_result+="################################\n"
+            # print("###########################")
+            # print("text :",result[i][0],"| key :",result[i][1])
+        self.TextEdit_result.setText(final_result)
 
     def des_enc(self):
         self.text = self.TextEdit_message.toPlainText()

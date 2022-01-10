@@ -176,128 +176,58 @@ def crack(user_input,length):
             intermidiate=[]
             frequency_list_values = right(frequency_list_values)
 
-    key_rates=[]
+    
+    keys_rates=[[] for x in range(key_length)]
+    frequency_rate_copy=frequency_rate.copy()
     for i in range(key_length):
-        key_rates.append(frequency_rate[i].index(max(frequency_rate[i])))
+        for j in range(4):
+            keys_rates[i].append(frequency_rate_copy[i].index(max(frequency_rate_copy[i])))
+            frequency_rate_copy[i][frequency_rate_copy[i].index(max(frequency_rate_copy[i]))] = -1
 
-    key=""
+    key_letters=[[] for x in range(key_length)]
+
+
+
+    letter=""
     for i in range(key_length):
-        key+=frequency_list_sorted[key_rates[i]]
+        for j in range(4):
+            letter=frequency_list_sorted[keys_rates[i][j]]
+            key_letters[i].append(letter)
 
-    
 
-    decrypted=V.decrypt_veg(user_input,key)
-    
-    result=[]
-    result.append(decrypted)
-    result.append(key)
-    return result
-    # frequency_rate_copy=frequency_rate.copy()
-    # keys_rates=[[] for x in range(key_length*8)]
-    # # for i in range(key_length*8):
-    # #     for j in range(key_length):
-    # #         keys_rates[i].append(0)
-    # print(frequency_rate_copy)
-    # print(keys_rates)
-    # for j in range(key_length*8):
-    #     # for i in range(key_length):
-    #     #     if
-    #     if j<8:
-    #         keys_rates[j].append(frequency_rate_copy[0].index(max(frequency_rate_copy[0])))
-    #         keys_rates[j].append(frequency_rate_copy[1].index(max(frequency_rate_copy[1])))
-    #         keys_rates[j].append(0)
-    #     if j>=8 and j<16:
-    #         keys_rates[j].append(frequency_rate_copy[0].index(max(frequency_rate_copy[0])))
-    #         keys_rates[j].append(0)
-    #         keys_rates[j].append(frequency_rate_copy[2].index(max(frequency_rate_copy[2])))
-    #     if j>=16:
-    #         keys_rates[j].append(0)
-    #         keys_rates[j].append(frequency_rate_copy[1].index(max(frequency_rate_copy[1])))
-    #         keys_rates[j].append(frequency_rate_copy[2].index(max(frequency_rate_copy[2])))
-    # for j in range(key_length*8):
-    #     if j<8:
-    #         keys_rates[j][2]=frequency_rate_copy[2].index(max(frequency_rate_copy[2]))
-    #         frequency_rate_copy[2][frequency_rate_copy[2].index(max(frequency_rate_copy[2]))] = -1
-    #     if j>=8 and j<16:
-    #         keys_rates[j][1]=frequency_rate_copy[1].index(max(frequency_rate_copy[1]))
-    #         frequency_rate_copy[1][frequency_rate_copy[1].index(max(frequency_rate_copy[1]))] = -1
-    #     if j>=16:
-    #         keys_rates[j][0]=frequency_rate_copy[0].index(max(frequency_rate_copy[0]))
-    #         frequency_rate_copy[0][frequency_rate_copy[0].index(max(frequency_rate_copy[0]))] = -1
+    # create the multiple combainaison
+    from itertools import product
+    possibilities = []
+    iteration = product(*tuple(key_letters))
+    for thing in iteration:
+        possibilities.append(thing)
 
-    # print(keys_rates)
-    # print(key_length)
-    # keys=[]
-    # key_2=""
-    # for k in range(key_length*8):
-    #     for i in range(key_length):
-    #         print("k ",k,"i",i)
-    #         key_2+=frequency_list_sorted[keys_rates[k][i]]
-    #     keys.append(key_2)
-    #     key_2=""
+    # create the keys
+    keys=[]
+    key_2=""
+    for i in range(len(possibilities)):
+        for j in range(key_length):
+            key_2+=possibilities[i][j]
+        keys.append(key_2)
+        key_2=""
 
-    # decrypteds=[]
-    # for key in range(24):
-    #     plain_text=V.decrypt_veg(user_input,keys[key])
-    #     decrypteds.append([plain_text,keys[key]])
-    
-    # return decrypteds
+    # decrypt the text wit each letter
+    decrypteds=[]
+    for key in range(len(possibilities)):
+        plain_text=V.decrypt_veg(user_input,keys[key])
+        decrypteds.append([plain_text,keys[key]])
 
+    return decrypteds
 
 def main():
     test="kjh hukfy visgovf nkjh julf urxclokvgk us poxshkis ubvq otv qfk us wxpdngxs jkkwnk"
     result=[]
     result=crack(test,4)
-    print(result)
-    # print("the text is :",result[0],"\nthe key is ;",result[1])
+    for i in range(len(result)):
+        print("###########################")
+        print("text :",result[i][0],"| key :",result[i][1])
 
 if __name__ == '__main__':
     main()
 
-"""
-# to be continued, to create all combinaison of keys
 
-frequency_rate_copy=frequency_rate.copy()
-keys_rates=[[] for x in range(8)]
-print(keys_rates)
-for j in range(8):
-    for i in range(key_length):
-        keys_rates[j].append(frequency_rate_copy[i].index(max(frequency_rate_copy[i])))
-print(keys_rates)
-
-"""
-
-#print(keywords)
-
-#string = "test de programmation de chiffrement bioinfo bonjour table salle informatique imprimante chaise\
-        #miroire longueur largeur bouteille souris ajouter rechercher clavier bien trop"
-
-# print(list_sorted_list)
-# print(sorted_list[0].values())
-# sorted_list[0]["c"]=0
-# print(sorted_list[0])
-# print(text)
-
-# print(sorted_list)
-# x=list(sorted_list[0].keys())
-# print(frequency.keys())
-# print(list(sorted_list[0].keys())[0])
-# print(sorted_list[0].key()=="m")
-
-
-# sort_dictionary= dict(sorted(repetetion.items(), key=lambda item: item[1],reverse=True)) 
-
-# for i in range(0,len(text),3):
-#     if (text[i]==max(sorted_list[0],key=sorted_list[0].get)):
-#         print(max(frequency,key=frequency.get))
-
-# for i in range(key_length):
-#   repetetions["dictionary_"+str(i)+"_letter"]= initials[i]
-# print(repetetions)
-
-# count=0
-# for j in repetetions.values():
-#     for i in j:
-#         repetetions[i]= j[i].count(i) 
-
-#print("rep",repetetions)
