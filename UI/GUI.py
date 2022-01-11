@@ -10,7 +10,7 @@
 # from _typeshed import Self
 import sys
 sys.path.insert(1, 'D:/Etude/BSD/TP')
-import Vegenere_min as V
+import Vegenere as V
 import Cesar as C
 import Substitution as S
 import Transposition as T

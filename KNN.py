@@ -240,36 +240,6 @@ def ascii_to_hex(ascii_str):
     return hex_str
 
 
-ascii_input = 'Im testing DES thank you'
-
-#add the messing characters to make the text length multiple to 8
-add=8-len(ascii_input)%8
-if (add!=8):
-    for i in range(add):
-        ascii_input+="#"
-
-#convert from text to hexadecimal
-hex_output = ascii_to_hex(ascii_input)
-hex_plain_text = hex_output.upper().decode("utf-8")
-
-ascii_key = 'testtest'
-hex_key = ascii_to_hex(ascii_key)
-# print('hex result is', hex_key.upper())
-hex_key = hex_key.upper().decode("utf-8")
-# print(hex_key)
-
-# Key generation
-# --hex to binary
-
-key = hex2bin(hex_key)
-pt = hex_plain_text
-
-# key = "4D594E414D454953"
-
-# # Key generation
-# # --hex to binary
-# key = hex2bin(key)
-
 # --parity bit drop table
 keyp = [57, 49, 41, 33, 25, 17, 9,
         1, 58, 50, 42, 34, 26, 18,
@@ -280,8 +250,6 @@ keyp = [57, 49, 41, 33, 25, 17, 9,
         14, 6, 61, 53, 45, 37, 29,
         21, 13, 5, 28, 20, 12, 4]
 
-# getting 56 bit key from 64 bit using the parity bits
-key = permute(key, keyp, 56)
 
 # Number of bit shifts
 shift_table = [1, 1, 2, 2,
@@ -299,76 +267,37 @@ key_comp = [14, 17, 11, 24, 1, 5,
             44, 49, 39, 56, 34, 53,
             46, 42, 50, 36, 29, 32]
 
-# Splitting
-left = key[0:28]  # rkb for RoundKeys in binary
-right = key[28:56]  # rk for RoundKeys in hexadecimal
-
-rkb = []
-rk = []
-for i in range(0, 16):
-    # Shifting the bits by nth shifts by checking from shift table
-    left = shift_left(left, shift_table[i])
-    right = shift_left(right, shift_table[i])
-
-    # Combination of left and right string
-    combine_str = left + right
-
-    # Compression of key from 56 to 48 bits
-    round_key = permute(combine_str, key_comp, 48)
-
-    rkb.append(round_key)
-    rk.append(bin2hex(round_key))
-
-"""
-print("Encryption")
-cipher_text=""
-blocks=int(len(pt)/16)
-bloc=pt[:16]
-bloc_length=16
-print(pt[48:64])
-for i in range(blocks):
-    if(i==blocks):
-        pass
-    cipher_text += bin2hex(encrypt(bloc, rkb, rk))
-    bloc=pt[bloc_length*(i+1):bloc_length*(i+2)]
-    print("Cipher Text : ", cipher_text)
-
-print("Decryption")
-rkb_rev = rkb[::-1]
-rk_rev = rk[::-1]
-text=""
-bloc=cipher_text[:16]
-for i in range(blocks):
-    if(i==blocks):
-        pass
-    text += bin2hex(encrypt(bloc, rkb_rev, rk_rev))
-    bloc=cipher_text[bloc_length*(i+1):bloc_length*(i+2)]
-    print("Text : ", text)
-print("Plain Text : ", bytearray.fromhex(text).decode())
-"""
 
 def encrypt_des(message, key):
+
+    #add the messing characters to make the text length multiple to 8
+    # add #
     add=8-len(message)%8
     if (add!=8):
         for i in range(add):
             message+="#"
     
+    #convert the text to hexadecimal
     hex_output = ascii_to_hex(message)
     hex_plain_text = hex_output.upper().decode("utf-8")
 
-    hex_key = ascii_to_hex(ascii_key)
+    #convert the key to hexadecimal
+    hex_key = ascii_to_hex(key)
     hex_key = hex_key.upper().decode("utf-8")
 
     key = hex2bin(hex_key)
     pt = hex_plain_text
 
+    # getting 56 bit key from 64 bit using the parity bits
     key = permute(key, keyp, 56)
 
-    left = key[0:28]  # rkb for RoundKeys in binary
-    right = key[28:56]  # rk for RoundKeys in hexadecimal
+    # split the key to two parts
+    left = key[0:28]  
+    right = key[28:56]  
 
-    rkb = []
-    rk = []
+    rkb = []    # rkb for RoundKeys in binary
+    rk = []     # rk for RoundKeys in hexadecimal
+
     for i in range(0, 16):
         # Shifting the bits by nth shifts by checking from shift table
         left = shift_left(left, shift_table[i])
@@ -384,10 +313,13 @@ def encrypt_des(message, key):
         rk.append(bin2hex(round_key))
 
     cipher_text=""
+
+    #calculate how many bocks of 8 caracters are in the text
     blocks=int(len(pt)/16)
+
+    #prepare the first block to crypt
     bloc=pt[:16]
     bloc_length=16
-    print(pt[48:64])
     for i in range(blocks):
         if(i==blocks):
             pass
@@ -399,20 +331,23 @@ def encrypt_des(message, key):
 
 def decrypt_des(cipher_text, ascii_key):
 
+    #convert the key to hexadecimal
     hex_key = ascii_to_hex(ascii_key)
     hex_key = hex_key.upper().decode("utf-8")
+
     # Key generation
     # --hex to binary
-
     key = hex2bin(hex_key)
-
+    # getting 56 bit key from 64 bit using the parity bits
     key = permute(key, keyp, 56)
 
-    left = key[0:28]  # rkb for RoundKeys in binary
-    right = key[28:56]  # rk for RoundKeys in hexadecimal
+    #split the key to two parts
+    left = key[0:28]  
+    right = key[28:56]  
 
-    rkb = []
-    rk = []
+    rkb = []   # rkb for RoundKeys in binary
+    rk = []    # rk for RoundKeys in hexadecimal
+
     for i in range(0, 16):
         # Shifting the bits by nth shifts by checking from shift table
         left = shift_left(left, shift_table[i])
@@ -427,34 +362,36 @@ def decrypt_des(cipher_text, ascii_key):
         rkb.append(round_key)
         rk.append(bin2hex(round_key))
 
+    #calculate how many blocks arein the text
     blocks=int(len(cipher_text)/16)
 
+    #reverse each part of the key
     rkb_rev = rkb[::-1]
     rk_rev = rk[::-1]
+
     text=""
     bloc_length=16
+    # initialize the first bloc to be decrypted
     bloc=cipher_text[:16]
     for i in range(blocks):
         if(i==blocks):
             pass
         text += bin2hex(encrypt(bloc, rkb_rev, rk_rev))
-        bloc=cipher_text[bloc_length*(i+1):bloc_length*(i+2)]
-        
+        bloc=cipher_text[bloc_length*(i+1):bloc_length*(i+2)]  
 
     return text
     
 def main():
     print("\n\n\nTest fonction\n\n\n")
-    # cipher = "DA394ECCC0D417DBD4CA3E484CEBF976A32AD92C0D451F16"
 
     ascii_input = 'Im testing DES thank yu'
-    ascii_key = 'testtest'
+    ascii_key = 'bangbang'
 
-    print("***Encription fonction***")
+    print("\n***Encription fonction***\n")
     result=encrypt_des(ascii_input,ascii_key)
     print("the result is :",result)
 
-    print("***Decription fonction***")
+    print("\n***Decription fonction***\n")
     plain_text=decrypt_des(result,ascii_key)
     print("key :", ascii_key)
     print("plain text :",plain_text)
@@ -462,7 +399,7 @@ def main():
 
 
 
-    
+#to execute the main uncomment the two next line of code    
 
-# if __name__ == '__main__':
-#     main()
+if __name__ == '__main__':
+    main()

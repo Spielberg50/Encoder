@@ -1,1 +1,0 @@
-self.pushButton_Submit.clicked.connect(lambda: self.submit(self.char))

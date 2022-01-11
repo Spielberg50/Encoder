@@ -1,3 +1,15 @@
+#cesar with lists
+def cesar_list(text,cle):
+    result=""
+    words=[]
+    encrypteds=[]
+    words=text.split()
+    for word in words:
+        encrypteds.append(encrypt(word,cle))
+    for i in encrypteds:
+        result+=" "+i
+    return 
+    
 #cesar
 def encrypt(text,cle):
     result = ""
@@ -19,17 +31,6 @@ def encrypt(text,cle):
                     result += chr((ord(char) + cle - 97) % 26 + 97)
     return result
     
-    #cesar with lists
-def cesar_list(text,cle):
-    result=""
-    words=[]
-    encrypteds=[]
-    words=text.split()
-    for word in words:
-        encrypteds.append(encrypt(word,cle))
-    for i in encrypteds:
-        result+=" "+i
-    return result
     
     #decrypt cesar
 def decrypt(text,cle):

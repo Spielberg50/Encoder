@@ -1,8 +1,3 @@
-'''
-alphabet = "abcdefghijklmnopqrstuvwxyz"
-key =      "fcpevqkzgmtrayonujdlwhbxsi"
-text = "TEST DE PROGRAMMATION DE CHIFFREMENT BIOINFO"
-'''
 def encrypt_sub(text,key,alphabet):
     result = ""
     for letter in text:
@@ -20,6 +15,12 @@ def decrypt_sub(text,key,alphabet):
         if letter.lower()in key:
             result += alphabet[key.find(letter.lower())]
     return result
+
+'''
+alphabet = "abcdefghijklmnopqrstuvwxyz"
+key =      "fcpevqkzgmtrayonujdlwhbxsi"
+text = "TEST DE PROGRAMMATION DE CHIFFREMENT BIOINFO"
+'''
 '''
 encrypted = encrypt_sub(text,key,alphabet)
 print(encrypted)

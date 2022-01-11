@@ -1,4 +1,4 @@
-import Vegenere_min as V
+import Vegenere as V
 
 alphabet="abcdefghijklmnopqrstuvwxyz"
 user_input = 'mi huzl wvts dtlw irvl kijrvnvi se mhxw gekkrykeq tyir mfb dyyolkglji gtugtqlx mex fzglw bej xwysej xw nt vrbv vtskxu e aa dtlwdn dtlw rejm fppii idvrehnh xduk eh qdnux hwi cffpi ra'
@@ -193,68 +193,6 @@ print("cypher_text : ",cypher_text)
 print("decrypted : ",decrypted)
 
 
-# to be continued, to create all combinaison of keys
-
-# frequency_rate_copy=frequency_rate.copy()
-# keys_rates=[[] for x in range(key_length*8)]
-# print(keys_rates)
-# for j in range(key_length*8):
-#     if j<8:
-#         keys_rates[j].append(frequency_rate_copy[0].index(max(frequency_rate_copy[0])))
-#         keys_rates[j].append(frequency_rate_copy[1].index(max(frequency_rate_copy[1])))
-#         keys_rates[j].append(0)
-#     if j>=8 and j<16:
-#         keys_rates[j].append(frequency_rate_copy[0].index(max(frequency_rate_copy[0])))
-#         keys_rates[j].append(0)
-#         keys_rates[j].append(frequency_rate_copy[2].index(max(frequency_rate_copy[2])))
-#     if j>=16:
-#         keys_rates[j].append(0)
-#         keys_rates[j].append(frequency_rate_copy[1].index(max(frequency_rate_copy[1])))
-#         keys_rates[j].append(frequency_rate_copy[2].index(max(frequency_rate_copy[2])))
-# for j in range(key_length*8):
-#     if j<8:
-#         keys_rates[j][2]=frequency_rate_copy[2].index(max(frequency_rate_copy[2]))
-#         frequency_rate_copy[2][frequency_rate_copy[2].index(max(frequency_rate_copy[2]))] = -1
-#     if j>=8 and j<16:
-#         keys_rates[j][1]=frequency_rate_copy[1].index(max(frequency_rate_copy[1]))
-#         frequency_rate_copy[1][frequency_rate_copy[1].index(max(frequency_rate_copy[1]))] = -1
-#     if j>=16:
-#         keys_rates[j][0]=frequency_rate_copy[0].index(max(frequency_rate_copy[0]))
-#         frequency_rate_copy[0][frequency_rate_copy[0].index(max(frequency_rate_copy[0]))] = -1
-
-# print(keys_rates)
-# print(frequency_rate)
-
-# keys=[]
-# key_2=""
-# for k in range(key_length*8):
-#     for i in range(key_length):
-#         key_2+=frequency_list_sorted[keys_rates[k][i]]
-#     keys.append(key_2)
-#     key_2=""
-# print(keys)
-# decrypteds=[]
-# for key in range(24):
-#     plain_text=V.decrypt_veg(user_input,keys[key])
-#     decrypteds.append([plain_text,key])
-# print("decrepteds",decrypteds)
-
-# key_length=3
-# frequency_rate_copy=frequency_rate.copy()
-# keys_rates=[[] for x in range(key_length)]
-# for i in range(key_length):
-#     for j in range(8):
-#         keys_rates[i].append([])
-
-# for i in range(key_length):
-#     for j in range(8):
-#         for k in range(key_length):
-#             keys_rates[i][j].append(0)
-
-# for i in range(key_length):
-#     for j in range(8):
-#         for k in range(key_length):
-#             keys_rates[i][j][k]=k
 
 keys_rates=[[] for x in range(key_length)]
 frequency_rate_copy=frequency_rate.copy()
@@ -299,38 +237,3 @@ for key in range(len(possibilities)):
     plain_text=V.decrypt_veg(user_input,keys[key])
     decrypteds.append([plain_text,keys[key]])
 print("decrepteds",decrypteds)
-
-#print(keywords)
-
-#string = "test de programmation de chiffrement bioinfo bonjour table salle informatique imprimante chaise\
-        #miroire longueur largeur bouteille souris ajouter rechercher clavier bien trop"
-
-# print(list_sorted_list)
-# print(sorted_list[0].values())
-# sorted_list[0]["c"]=0
-# print(sorted_list[0])
-# print(text)
-
-# print(sorted_list)
-# x=list(sorted_list[0].keys())
-# print(frequency.keys())
-# print(list(sorted_list[0].keys())[0])
-# print(sorted_list[0].key()=="m")
-
-
-# sort_dictionary= dict(sorted(repetetion.items(), key=lambda item: item[1],reverse=True)) 
-
-# for i in range(0,len(text),3):
-#     if (text[i]==max(sorted_list[0],key=sorted_list[0].get)):
-#         print(max(frequency,key=frequency.get))
-
-# for i in range(key_length):
-#   repetetions["dictionary_"+str(i)+"_letter"]= initials[i]
-# print(repetetions)
-
-# count=0
-# for j in repetetions.values():
-#     for i in j:
-#         repetetions[i]= j[i].count(i) 
-
-#print("rep",repetetions)

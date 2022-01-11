@@ -1,12 +1,11 @@
-import Vegenere_min as V
+import Vegenere as V
 
 alphabet="abcdefghijklmnopqrstuvwxyz"
-user_input = 'mi huzl wvts dtlw irvl kijrvnvi se mhxw gekkrykeq tyir mfb dyyolkglji gtugtqlx mex fzglw bej xwysej xw nt vrbv vtskxu e aa dtlwdn dtlw rejm fppii idvrehnh xduk eh qdnux hwi cffpi ra'
+# user_input = 'mi huzl wvts dtlw irvl kijrvnvi se mhxw gekkrykeq tyir mfb dyyolkglji gtugtqlx mex fzglw bej xwysej xw nt vrbv vtskxu e aa dtlwdn dtlw rejm fppii idvrehnh xduk eh qdnux hwi cffpi ra'
 # user_input="escmsju gdpqtqx poptc zdxw yh wjlw bhhtfmc escvsxu tgrkgdqbh rdxztdy shfjw hteei segiexw"
-user_input="escmsjuntvyxvgwdvtiisgmchftqcppmcdgwlehhwidfahsggmcdxtxvxqxtuvdjeilscweqoipxfdqwdlvroekligxrxyigvmihpnqe"
-user_input="ijvbxblnpzrsfwqjbqzwbcnjuubuxrwcbxcbwubsrsjjrinpjcrirxscp"
-text = user_input.split()
-text = ''.join(text)
+# user_input="escmsjuntvyxvgwdvtiisgmchftqcppmcdgwlehhwidfahsggmcdxtxvxqxtuvdjeilscweqoipxfdqwdlvroekligxrxyigvmihpnqe"
+# user_input="ijvbxbxlnpzrsfwqjbqzwbcnjuubuxrwcbxcbwubsrsjjrinpjcrirxscp"#3
+
 
 frequency = {"e":15.10,
              "a":8.13,
@@ -34,28 +33,6 @@ frequency = {"e":15.10,
              "y":0.19, 
              "k":0.16, 
              "w":0.04}
-words=["informatique",
-        "bonjour",
-        "madame",
-        "bioinfo",
-        "texte",
-        "valeur",
-        "ordinateur",
-        "chiffrement",
-        "malade",
-        "covid",
-        "telephone",
-        "table",
-        "chaise",
-        "imprimante",
-        "teste",
-        "souris",
-        "chat",
-        "lion",
-        "puce",
-        "clavier",
-        "sachet"]
-cypher_text=text
 
 #function that shift to the right by 1
 def right(listL):
@@ -81,8 +58,7 @@ def crack(user_input,length):
     if(len(text)%key_length!=0):
         sup=parts.pop()
 
-    # print(parts)
-    # print(sup)
+
     #create empty lists depending on key length
     initials=[[] for x in range(key_length)]
 
@@ -112,18 +88,16 @@ def crack(user_input,length):
     frequency_list=list(frequency.keys())
     frequency_list_sorted=sorted(frequency_list)
 
-    # print(sorted(frequency))
 
     #sort frequencies int the dictionary
     sortedDict = dict( sorted(frequency.items(), key=lambda x: x[0].lower()) )
-    # for k,v in sortedDict.items():
-    #     print('{}:{}'.format(k,v))
+
 
     #from string to list
     text_list=[]
     text_list[:0]=text
 
-    # print("sorted",sorted_list)
+
     #replace each letter by its frequency letter
     count=0
     char=""
@@ -145,8 +119,6 @@ def crack(user_input,length):
         sorted_list[count] = dict( sorted(i.items(), key=lambda x: x[0].lower()) )
         count+=1
 
-    # print(sorted_list[0])
-    # print(sortedDict)
 
     #sorted_list dictionary to list
     list_sorted_list=[[] for x in range(key_length)]
@@ -158,11 +130,6 @@ def crack(user_input,length):
 
     #get the frequencies values
     frequency_list_values=list(sortedDict.values())
-
-    #calculate rates
-    # for i in list_sorted_list[0]:
-    #     for j in range(26):
-    #         list_sorted_list[0]*frequency_list_values
 
 
     #create the rate of each letter
@@ -227,7 +194,7 @@ def main():
         print("###########################")
         print("text :",result[i][0],"| key :",result[i][1])
 
-if __name__ == '__main__':
-    main()
+# if __name__ == '__main__':
+#     main()
 
 

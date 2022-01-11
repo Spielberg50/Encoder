@@ -1,60 +1,57 @@
-
-    # Vigenere Cipher
-
-    # This function generates the
-    # key in a cyclic manner until
-    # it's length isn't equal to
-    # the length of original text
-def generateKey(string, key):
-    key = list(key)
-    if len(string) == len(key):
-        return(key)
-    else:
-        for i in range(len(string) - len(key)):
-            key.append(key[i % len(key)])
-    return("" . join(key))
-        
-    # This function returns the
-    # encrypted text generated
-    # with the help of the key
-def encrypt_veg(string, key):
-    cipher_text = []
-    for i in range(len(string)):
-        if(string[i]==" "):
-            x=" "
+def encrypt_veg(message, key):
+    key = generateKey(message, key)
+    alphabet = "abcdefghijklmnopqrstuvwxyz"
+    cipher_text = ""
+    for i in range(len(message)):
+        if message[i].isalpha():
+            val = (alphabet.find(message[i]) + alphabet.find(key[i])) % 26
+            cipher_text += alphabet[val]
         else:
-            x = (ord(string[i]) + ord(key[i])) % 26
-            x += ord('A')
-        cipher_text.append(chr(x))
-    return("" . join(cipher_text))
-        
-    # This function decrypts the
-    # encrypted text and returns
-    # the original text
-def decrypt_veg(cipher_text, key):
-    orig_text = []
-    for i in range(len(cipher_text)):
-        x = (ord(cipher_text[i]) - ord(key[i]) + 26) % 26
-        x += ord('A')
-        orig_text.append(chr(x))
-    return("" . join(orig_text))
-        
+            cipher_text += message[i]
+    return cipher_text
 
+def decrypt_veg(message, key):
+    key = generateKey(message, key)
+    alphabet = "abcdefghijklmnopqrstuvwxyz"
+    decrypted = ""
+    for i in range(len(message)):
+        if message[i].isalpha():
+            val = (alphabet.find(message[i]) - alphabet.find(key[i])) % 26
+            decrypted += alphabet[val]
+        else:
+            decrypted += message[i]
+    return decrypted
 
+def generateKey(message, key):
 
-# Driver code
+    long_key = ""
+    j = 0
 
-if __name__ == "__main__":   
-    string = "test de programmation de chiffrement bioinfo bonjour table salle informatique imprimante chaise miroire longueur largeur bouteille souris ajouter rechercher clavier bien trop"
-    string=string.upper()
-    string=string.split()
-    string="".join(string)
-    keyword = "BIOINF"
+    for i in range(len(message)):
+        if message[i] == " ":
+            # ignoring spaces
+            long_key += " "
+        else:
+            if j < len(key):
+                long_key += key[j]
+                j += 1
+            else:
+                j = 0
+                long_key += key[j]
+                j += 1
+                
+    return long_key
+
+def main():   
+    string = "cest notre premier test pour lalgorithme de vigenere avec une cle de cryptage petite"
+    keyword = "depart"   
     
-    key = generateKey(string, keyword)
-    cipher_text = encrypt_veg(string,key)
+    cipher_text = encrypt_veg(string,keyword)
     print("\ntext:",string)
     print("Ciphertext     :", cipher_text)
-    print("key            :", key)
-    print("Decrypted Text :", decrypt_veg("ivgn tfhlk gfyszsl zvgn vfil rrzauiwnnds xk mwakeslk rjyi lby ics xk tfsvkoak gsnoks", key),"\n") 
-   
+    print("key            :", keyword)
+    print("Decrypted Text :", decrypt_veg("fiht ehwvt pixpmtr kxvx eolk oeagfklxwmv wh zxgvghvt amxf yce teh ht cirsxpgv ihxxtv", "depart"),"\n") 
+
+if __name__ == "__main__":
+    main()
+    #je suis tres mais tres heureuse de vous retrouvez avec moi aujourdhui parceque jai finis mes etudes et je vais rester a la maison mais cest clair parceque tout le monde est comme ca
