@@ -1,6 +1,8 @@
 
 import sys
-sys.path.insert(1, 'D:/Etude/BSD/TP')
+import os
+path = os.path.split(os.path.dirname(os.path.abspath(__file__)))
+sys.path.insert(1, path[0])
 import Vegenere as V
 import Cesar as C
 import Substitution as S
